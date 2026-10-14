@@ -1,0 +1,70 @@
+Table users {
+  id int [pk, increment]
+  name varchar
+}
+
+Table categories {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  name varchar
+  tier int
+  base_hue varchar
+}
+
+Table actions {
+  id int [pk, increment]
+  category_id int [ref: > categories.id]
+  code varchar
+  label varchar
+  color varchar
+}
+
+Table entries {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  action_id int [ref: > actions.id]
+  start_time datetime
+  duration_minutes int
+
+  indexes {
+    (user_id, start_time)
+  }
+}
+
+Table metric_types {
+  id int [pk, increment]
+  name varchar
+  unit varchar
+}
+
+Table metrics {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  date date
+  metric_type_id int [ref: > metric_types.id]
+  value float
+}
+
+Table goals {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  target_type varchar // 'category' | 'action'
+  target_id int
+  goal_type varchar   // 'duration' | 'count'
+  period varchar      // 'week' | 'month'
+  target_value float
+}
+
+Table milestone_logs {
+  id int [pk, increment]
+  goal_id int [ref: > goals.id]
+  date date
+  note text
+}
+
+Table notes {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  date date
+  content text
+}
